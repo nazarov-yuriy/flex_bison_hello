@@ -9,12 +9,13 @@
 #include "Parser.h"
 #include "Lexer.h"
  
-int yyerror(SExpression **expression, yyscan_t scanner, const char *msg) {
+int yyerror(YYLTYPE *l, SExpression **expression, yyscan_t scanner, const char *msg) {
     // Add error handling routine as needed
 }
  
 %}
- 
+%locations
+
 %code requires {
  
 #ifndef YY_TYPEDEF_YY_SCANNER_T
@@ -55,10 +56,10 @@ input
     ;
  
 expr
-    : expr[L] TOKEN_PLUS expr[R] { $$ = createOperation( ePLUS, $L, $R ); }
-    | expr[L] TOKEN_MULTIPLY expr[R] { $$ = createOperation( eMULTIPLY, $L, $R ); }
-    | TOKEN_LPAREN expr[E] TOKEN_RPAREN { $$ = $E; }
-    | TOKEN_NUMBER { $$ = createNumber($1); }
+    : expr[L] TOKEN_PLUS expr[R]        { $$ = createOperation( ePLUS,        $L, 0,  $R, @1.first_column, @3.last_column ); }
+    | expr[L] TOKEN_MULTIPLY expr[R]    { $$ = createOperation( eMULTIPLY,    $L, 0,  $R, @1.first_column, @3.last_column ); }
+    | TOKEN_LPAREN expr[C] TOKEN_RPAREN { $$ = createOperation( ePARENTHESES, 0,  $C, 0,  @1.first_column, @3.last_column ); }
+    | TOKEN_NUMBER                      { $$ = createNumber($1, @1.first_column, @1.last_column); }
     ;
  
 %%

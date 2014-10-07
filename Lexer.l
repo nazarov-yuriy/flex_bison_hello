@@ -7,11 +7,19 @@
  
 #include "Expression.h"
 #include "Parser.h"
- 
+
 #include <stdio.h>
- 
+
+int colnum = 0;
+#define YY_USER_ACTION {yylloc->first_line = yylineno; \
+        yylloc->first_column = colnum;                 \
+        colnum=colnum+yyleng;                         \
+        yylloc->last_column=colnum;                    \
+        yylloc->last_line = yylineno;}
+
 %}
- 
+%option yylineno
+%option bison-locations
 %option outfile="Lexer.c" header-file="Lexer.h"
 %option warn nodefault
  

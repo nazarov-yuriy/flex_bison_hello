@@ -12,7 +12,8 @@ typedef enum tagEOperationType
 {
     eVALUE,
     eMULTIPLY,
-    ePLUS
+    ePLUS,
+    ePARENTHESES
 } EOperationType;
 
 /**
@@ -21,10 +22,12 @@ typedef enum tagEOperationType
 typedef struct tagSExpression
 {
     EOperationType type;///< type of operation
-
+    int from;
+    int to;
     int value;///< valid only when type is eVALUE
-    struct tagSExpression *left; ///< left side of the tree
-    struct tagSExpression *right;///< right side of the tree
+    struct tagSExpression *left;
+    struct tagSExpression *right;
+    struct tagSExpression *center;
 } SExpression;
 
 /**
@@ -32,7 +35,7 @@ typedef struct tagSExpression
  * @param value The number value
  * @return The expression or NULL in case of no memory
  */
-SExpression *createNumber(int value);
+SExpression *createNumber(int value, int from, int to);
 
 /**
  * @brief It creates an operation
@@ -41,7 +44,7 @@ SExpression *createNumber(int value);
  * @param right The right operand
  * @return The expression or NULL in case of no memory
  */
-SExpression *createOperation(EOperationType type, SExpression *left, SExpression *right);
+SExpression *createOperation(EOperationType type, SExpression *left, SExpression *center, SExpression *right, int from, int to);
 
 /**
  * @brief Deletes a expression

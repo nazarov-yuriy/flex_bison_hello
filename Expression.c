@@ -27,7 +27,7 @@ static SExpression *allocateExpression()
     return b;
 }
 
-SExpression *createNumber(int value)
+SExpression *createNumber(int value, int from, int to)
 {
     SExpression *b = allocateExpression();
 
@@ -36,11 +36,13 @@ SExpression *createNumber(int value)
 
     b->type = eVALUE;
     b->value = value;
+    b->from = from;
+    b->to = to;
 
     return b;
 }
 
-SExpression *createOperation(EOperationType type, SExpression *left, SExpression *right)
+SExpression *createOperation(EOperationType type, SExpression *left, SExpression *center, SExpression *right, int from, int to)
 {
     SExpression *b = allocateExpression();
 
@@ -48,8 +50,11 @@ SExpression *createOperation(EOperationType type, SExpression *left, SExpression
         return NULL;
 
     b->type = type;
+    b->center = center;
     b->left = left;
     b->right = right;
+    b->from = from;
+    b->to = to;
 
     return b;
 }
